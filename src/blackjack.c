@@ -1,7 +1,8 @@
-#include <iostream>
-#include <ctime>
-//#include <time.h>
-using namespace std;
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 //function to generate cards
 int genCard() {
 	int nuMR = (rand() % 100) + 1;
@@ -21,66 +22,66 @@ int main() {
 	//generate hands
 	currCard = genCard();
 	usrNum += currCard;
-	cout << "Card 1 is " << currCard << endl;
+	printf("Card 1 is %d\n", currCard);
 	currCard = genCard();
 	usrNum += currCard;
-	cout << "Card 2 is " << currCard << endl;
-	cout << "Total is " << usrNum << endl;
+	printf("Card 2 is %d\n", currCard);
+	printf("Total is %d\n", usrNum);
 	currCard = genCard();
 	cpuHide += currCard;
 	currCard = genCard();
 	cpuNum += currCard;
-	cout << "CPU has " << cpuNum << " and hidden card" << endl;
+	printf("CPU has %d and hidden card\n", cpuNum);
 
 	while (true) {
 		//check for wins
 		if (cpuNum + cpuHide == 21) {
-			cout << "CPU has " << cpuNum + cpuHide << " so CPU wins. You lose!!!!" << endl;
+			printf("CPU has %d so CPU wins. You lose!!!!\n", cpuNum + cpuHide);
 			break;
 		}
 		else if (usrNum == 21) {
-			cout << "You WIN!!!!!!!!!" << endl;
+			printf("You WIN!!!!!!!!!\n");
 			break;
 		}
 		else {
-			cout << endl;
+			printf("\n");
 		}
 		//action prompt
-		cout << "Choose action:\n1) Draw\n2) Pass\nChoice: ";
-		cin >> usOpt;
+		printf("Choose action:\n1) Draw\n2) Pass\nChoice: ");
+		scanf("%d", &usOpt);
 		if (usOpt == 1) {
 			currCard = genCard();
 			usrNum += currCard;
-			cout << "You drew a " << currCard << " and your new total is " << usrNum << endl;
+			printf("You drew a %d and your new total is %d\n", currCard, usrNum);
 			if (usrNum > 21) {
-				cout << endl << "You bust!!!!" << endl;
+				printf("\nYou bust!!!!\n");
 				break;
 			}
 		}
 		else {
-			cout << "You pass" << endl;
+			printf("You pass\n");
 		}
 		//cpu action
 		if (cpuNum + cpuHide < 17) {
 			currCard = genCard();
 			cpuNum += currCard;
-			cout << "CPU draws " << currCard << " and CPU new total is " << cpuNum << " plus hidden card" << endl;
+			printf("CPU draws %d and CPU new total is %d plus hidden card\n", currCard, cpuNum);
 			if (cpuNum + cpuHide > 21) {
-				cout << "CPU busts. You WIN!!!!" << endl;
+				printf("CPU busts. You WIN!!!!\n");
 				break;
 			}
 		}
 		else {
 			cpuPass = rand() % 2;
 			if (cpuPass == 1) {
-				cout << "CPU passes. Your turn." << endl;
+				printf("CPU passes. Your turn.\n");
 			}
 			else {
 				currCard = genCard();
 				cpuNum += currCard;
-				cout << "CPU draws " << currCard << " and CPU new total is " << cpuNum << " plus hidden card" << endl;
+				printf("CPU draws %d and CPU new total is %d plus hidden card\n", currCard, cpuNum);
 				if (cpuNum + cpuHide > 21) {
-					cout << "CPU busts. You WIN!!!!" << endl;
+					printf("CPU busts. You WIN!!!!\n");
 					break;
 				}
 			}

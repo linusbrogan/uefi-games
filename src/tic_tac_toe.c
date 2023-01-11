@@ -1,5 +1,6 @@
-#include <iostream>
-using namespace std;
+#include <stdbool.h>
+#include <stdio.h>
+
 //COULD MAYBE ADD AI??
 int main() {
 	//init tacBoard
@@ -8,12 +9,12 @@ int main() {
 	while (true) {
 		int spcCnt = 9;
 		//board
-		cout << endl;
+		printf("\n");
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				cout << tacBoard[i][j] << ' ';
+				printf("%c ", tacBoard[i][j]);
 			}
-			cout << endl;
+			printf("\n");
 		}
 		//Check win/tie
 		for (int i = 0; i < 3; i++) {
@@ -24,39 +25,39 @@ int main() {
 			}
 		}
 		if (spcCnt == 0) {
-			cout << "Tie" << endl;
+			printf("Tie\n");
 			break;
 		}
 		if (tacBoard[0][0] == tacBoard[0][1] && tacBoard[0][0] == tacBoard[0][2] && tacBoard[0][0] != ' ') {
-			cout << tacBoard[0][0] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][0]);
 			break;
 		}
 		else if (tacBoard[1][0] == tacBoard[1][1] && tacBoard[1][0] == tacBoard[1][2] && tacBoard[1][0] != ' ') {
-			cout << tacBoard[1][0] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[1][0]);
 			break;
 		}
 		else if (tacBoard[2][0] == tacBoard[2][1] && tacBoard[2][0] == tacBoard[2][2] && tacBoard[2][0] != ' ') {
-			cout << tacBoard[2][0] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[2][0]);
 			break;
 		}
 		else if (tacBoard[0][0] == tacBoard[1][0] && tacBoard[0][0] == tacBoard[2][0] && tacBoard[0][0] != ' ') {
-			cout << tacBoard[0][0] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][0]);
 			break;
 		}
 		else if (tacBoard[0][1] == tacBoard[1][1] && tacBoard[0][1] == tacBoard[2][1] && tacBoard[0][1] != ' ') {
-			cout << tacBoard[0][1] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][1]);
 			break;
 		}
 		else if (tacBoard[0][2] == tacBoard[1][2] && tacBoard[0][2] == tacBoard[2][2] && tacBoard[0][2] != ' ') {
-			cout << tacBoard[0][2] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][2]);
 			break;
 		}
 		else if (tacBoard[0][0] == tacBoard[1][1] && tacBoard[0][0] == tacBoard[2][2] && tacBoard[0][0] != ' ') {
-			cout << tacBoard[0][0] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][0]);
 			break;
 		}
 		else if (tacBoard[0][2] == tacBoard[1][1] && tacBoard[0][2] == tacBoard[2][0] && tacBoard[0][2] != ' ') {
-			cout << tacBoard[0][2] << " wins!!!" << endl;
+			printf("%c wins!!!\n", tacBoard[0][2]);
 			break;
 		}
 		//decide turn
@@ -67,8 +68,8 @@ int main() {
 			currSym = 'O';
 		}
 		//prompt
-		cout << "Where would you (" << currSym << ") like to go (1-9): "; 
-		cin >> usOpt;
+		printf("Where would you (%c) like to go (1-9): ", currSym); 
+		scanf("%d", &usOpt);
 		switch (usOpt) {
 		case 1:
 			if (tacBoard[0][1] == ' ') {
@@ -76,7 +77,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 2:
@@ -85,7 +86,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 3:
@@ -94,7 +95,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 4:
@@ -103,7 +104,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 5:
@@ -112,7 +113,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 6:
@@ -121,7 +122,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 7:
@@ -130,7 +131,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 8:
@@ -139,7 +140,7 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		case 9:
@@ -148,11 +149,11 @@ int main() {
 				playTurn++;
 			}
 			else {
-				cout << "Invalid location" << endl;
+				printf("Invalid location\n");
 			}
 			break;
 		default:
-			cout << "Invalid location" << endl;
+			printf("Invalid location\n");
 			continue;
 
 		}
