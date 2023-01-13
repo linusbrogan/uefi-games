@@ -31,13 +31,10 @@ bool checkWin() {
 		}
 	}
 
-	if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[0][0] == board[2][2]) {
-		printf("%c wins!\n", board[0][0]);
-		return true;
-	}
-
-	if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[0][2] == board[2][0]) {
-		printf("%c wins!\n", board[0][2]);
+	bool downDiagonalMatches = board[1][1] == board[0][0] && board[1][1] == board[2][2];
+	bool upDiagonalMatches = board[1][1] == board[0][2] && board[1][1] == board[2][0];
+	if (board[1][1] != ' ' && (downDiagonalMatches || upDiagonalMatches)) {
+		printf("%c wins!\n", board[1][1]);
 		return true;
 	}
 
