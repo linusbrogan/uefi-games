@@ -3,89 +3,89 @@
 #include <stdlib.h>
 #include <time.h>
 
-//function to generate cards
-int genCard() {
-	int nuMR = (rand() % 100) + 1;
-	while (nuMR > 13) {
-		nuMR = (rand() % 100) + 1;
-	}
-	if (nuMR > 10) {
-		nuMR = 10;
-	}
-	return nuMR;
+int dealerHand = 0;
+int dealerHiddenCard = 0;
+int playerHand = 0;
+
+int drawCard() {
+	int card = (rand() % 13) + 1;
+	if (card > 10) card = 10;
+	return card;
 }
-int main() {
-	//seed random and initialize vars
+
+void dealHands() {
+	int card1 = drawCard();
+	int card2 = drawCard();
+	playerHand = card1 + card2;
+	printf("You have a %d and a %d. Your total is %d.\n", card1, card2, playerHand);
+
+	dealerHiddenCard = drawCard();
+	dealerHand = drawCard();
+	printf("Dealer has a %d and a hidden card.\n", dealerHand);
+}
+
+void initialize() {
 	srand(time(0));
 	srand(rand() * time(0));
-	int cpuPass = 0, usOpt = 0, usrNum = 0, cpuNum = 0, cpuHide = 0, currCard = 0;
-	//generate hands
-	currCard = genCard();
-	usrNum += currCard;
-	printf("Card 1 is %d\n", currCard);
-	currCard = genCard();
-	usrNum += currCard;
-	printf("Card 2 is %d\n", currCard);
-	printf("Total is %d\n", usrNum);
-	currCard = genCard();
-	cpuHide += currCard;
-	currCard = genCard();
-	cpuNum += currCard;
-	printf("CPU has %d and hidden card\n", cpuNum);
 
-	while (true) {
-		//check for wins
-		if (cpuNum + cpuHide == 21) {
-			printf("CPU has %d so CPU wins. You lose!!!!\n", cpuNum + cpuHide);
-			break;
-		}
-		else if (usrNum == 21) {
-			printf("You WIN!!!!!!!!!\n");
-			break;
-		}
-		else {
-			printf("\n");
-		}
-		//action prompt
-		printf("Choose action:\n1) Draw\n2) Pass\nChoice: ");
-		scanf("%d", &usOpt);
-		if (usOpt == 1) {
-			currCard = genCard();
-			usrNum += currCard;
-			printf("You drew a %d and your new total is %d\n", currCard, usrNum);
-			if (usrNum > 21) {
-				printf("\nYou bust!!!!\n");
-				break;
-			}
-		}
-		else {
-			printf("You pass\n");
-		}
-		//cpu action
-		if (cpuNum + cpuHide < 17) {
-			currCard = genCard();
-			cpuNum += currCard;
-			printf("CPU draws %d and CPU new total is %d plus hidden card\n", currCard, cpuNum);
-			if (cpuNum + cpuHide > 21) {
-				printf("CPU busts. You WIN!!!!\n");
-				break;
-			}
-		}
-		else {
-			cpuPass = rand() % 2;
-			if (cpuPass == 1) {
-				printf("CPU passes. Your turn.\n");
-			}
-			else {
-				currCard = genCard();
-				cpuNum += currCard;
-				printf("CPU draws %d and CPU new total is %d plus hidden card\n", currCard, cpuNum);
-				if (cpuNum + cpuHide > 21) {
-					printf("CPU busts. You WIN!!!!\n");
-					break;
-				}
-			}
-		}
+	dealHands();
+}
+
+bool checkGameOver() {
+	int dealerTotal = dealerHand + dealerHiddenCard;
+	if (dealerTotal > 21) {
+		printf("Dealer's hidden card was %d. Dealer has %d. Dealer busts. You win!\n", dealerHiddenCard, dealerTotal);
+		return true;
 	}
+	if (playerHand > 21) {
+		printf("Your total is %d. You bust. You lose!\n", playerHand);
+		return true;
+	}
+	if (playerHand == 21) {
+		printf("You have 21. You win!\n");
+		return true;
+	}
+	if (dealerTotal == 21) {
+		printf("Dealer's hidden card was %d. Dealer has 21. Dealer wins. You lose!\n", dealerHiddenCard);
+		return true;
+	}
+	return false;
+}
+
+void takePlayerTurn() {
+	printf("Choose an action:\n1) Draw\n2) Pass\nChoice: ");
+	int playerAction = 0;
+	scanf(" %d", &playerAction);
+	if (playerAction == 1) {
+		int card = drawCard();
+		playerHand += card;
+		printf("You drew a %d. Your new total is %d.\n", card, playerHand);
+	} else {
+		printf("You pass.\n");
+	}
+}
+
+void takeDealerTurn() {
+	if (dealerHand + dealerHiddenCard < 17 || rand() % 2) {
+		int card = drawCard();
+		dealerHand += card;
+		printf("Dealer draws %d. Dealer's new total is %d plus hidden card.\n", card, dealerHand);
+	} else {
+		printf("Dealer passes. Your turn.\n");
+	}
+}
+
+void playGame() {
+	while (!checkGameOver()) {
+		printf("\n");
+		takePlayerTurn();
+		if (checkGameOver()) break;
+		takeDealerTurn();
+	}
+}
+
+int main() {
+	initialize();
+	playGame();
 	return 0;
 }
