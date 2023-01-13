@@ -20,11 +20,6 @@ void printBoard() {
 }
 
 bool checkWin() {
-	if (blankSpaces == 0) {
-		printf("Tie.\n");
-		return true;
-	}
-
 	for (int i = 0; i < 3; i++) {
 		if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
 			printf("%c wins!\n", board[i][0]);
@@ -45,6 +40,12 @@ bool checkWin() {
 		printf("%c wins!\n", board[0][2]);
 		return true;
 	}
+
+	if (blankSpaces == 0) {
+		printf("Tie.\n");
+		return true;
+	}
+
 	return false;
 }
 
