@@ -1,4 +1,5 @@
 CFLAGS_EFI = \
+	-DLB_EFI \
 	-I/usr/include/efi \
 	-fpic \
 	-ffreestanding \
@@ -33,17 +34,18 @@ OBJCOPYFLAGS_EFI = \
 	--subsystem=10
 
 .PHONY: default
-default: tic_tac_toe.efi
+default: tic_tac_toe
 
 %.o: src/%.c
-	gcc $(CFLAGS_EFI) -o $@ $^
+	gcc $(CFLAGS) -o $@ $^
 
 %.so: %.o
-	ld -o $@ $^ $(LDFLAGS_EFI)
+	ld -o $@ $^ $(LDFLAGS)
 
+%.efi: CFLAGS += $(CFLAGS_EFI)
+%.efi: LDFLAGS += $(LDFLAGS_EFI)
 %.efi: %.so
 	objcopy $(OBJCOPYFLAGS_EFI) $^ $@
 
-.PHONY: clean
-clean:
-	-rm *.o *.so *.efi
+%: %.o
+	cp $< $@
