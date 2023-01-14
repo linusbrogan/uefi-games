@@ -1,3 +1,5 @@
+#include <efi.h>
+#include <efilib.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -10,23 +12,23 @@ char board[3][3] = {
 };
 
 void printBoard() {
-	printf("\n+-+-+-+\n");
+	Print(L"\n+-+-+-+\n");
 	for (int i = 0; i < 3; i++) {
-		printf("|");
+		Print(L"|");
 		for (int j = 0; j < 3; j++)
-			printf("%c|", board[i][j]);
-		printf("\n+-+-+-+\n");
+			Print(L"%c|", board[i][j]);
+		Print(L"\n+-+-+-+\n");
 	}
 }
 
 bool checkWin() {
 	for (int i = 0; i < 3; i++) {
 		if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
-			printf("%c wins!\n", board[i][0]);
+			Print(L"%c wins!\n", board[i][0]);
 			return true;
 		}
 		if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[0][i] == board[2][i]) {
-			printf("%c wins!\n", board[0][i]);
+			Print(L"%c wins!\n", board[0][i]);
 			return true;
 		}
 	}
@@ -34,22 +36,35 @@ bool checkWin() {
 	bool downDiagonalMatches = board[1][1] == board[0][0] && board[1][1] == board[2][2];
 	bool upDiagonalMatches = board[1][1] == board[0][2] && board[1][1] == board[2][0];
 	if (board[1][1] != ' ' && (downDiagonalMatches || upDiagonalMatches)) {
-		printf("%c wins!\n", board[1][1]);
+		Print(L"%c wins!\n", board[1][1]);
 		return true;
 	}
 
 	if (blankSpaces == 0) {
-		printf("Tie.\n");
+		Print(L"Tie.\n");
 		return true;
 	}
 
 	return false;
 }
 
+unsigned int readChar() {
+	EFI_STATUS Status = uefi_call_wrapper(ST->ConIn->Reset, 2, ST->ConIn, FALSE);
+	if (EFI_ERROR(Status)) return 0;
+	EFI_INPUT_KEY Key;
+	while ((Status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &Key)) == EFI_NOT_READY);
+	return Key.UnicodeChar;
+}
+
+int readDigit() {
+	unsigned int c = readChar();
+	return c - '0';
+}
+
 void takeTurn() {
-	printf("Where would you (%c) like to go (1-9): ", activePlayer);
-	int playerAction = 0;
-	scanf("%d", &playerAction);
+	Print(L"Where would you (%c) like to go (1-9): ", activePlayer);
+	int playerAction = readDigit();
+	Print(L"\n");
 	playerAction--;
 	int row = playerAction / 3;
 	int column = playerAction % 3;
@@ -58,7 +73,7 @@ void takeTurn() {
 		blankSpaces--;
 		if (activePlayer == 'X') activePlayer = 'O';
 		else activePlayer = 'X';
-	} else printf("Invalid location.");
+	} else Print(L"Invalid location.");
 }
 
 void playGame() {
@@ -72,4 +87,10 @@ void playGame() {
 int main() {
 	playGame();
 	return 0;
+}
+
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
+	InitializeLib(ImageHandle, SystemTable);
+	main();
+	return EFI_SUCCESS;
 }
