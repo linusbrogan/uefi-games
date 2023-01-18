@@ -31,13 +31,19 @@ OBJCOPYFLAGS = \
 	--target efi-app-x86_64 \
 	--subsystem=10
 
+LIBS = \
+	efistub \
+	io \
+	rand \
+	time
+
 .PHONY: default
 default: blackjack.efi tic_tac_toe.efi
 
 %.o: src/%.c
 	gcc $(CFLAGS) -c -o $@ $^
 
-%.so: %.o rand.o time.o
+%.so: $(addsuffix .o,% $(LIBS))
 	ld -o $@ $^ $(LDFLAGS)
 
 %.efi: %.so

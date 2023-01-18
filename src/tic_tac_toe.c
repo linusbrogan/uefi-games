@@ -1,7 +1,6 @@
-#include <efi.h>
-#include <efilib.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include "efistub.h"
+#include "io.h"
 
 char activePlayer = 'X';
 int blankSpaces = 3 * 3;
@@ -48,19 +47,6 @@ bool checkWin() {
 	return false;
 }
 
-unsigned int readChar() {
-	EFI_STATUS Status = uefi_call_wrapper(ST->ConIn->Reset, 2, ST->ConIn, FALSE);
-	if (EFI_ERROR(Status)) return 0;
-	EFI_INPUT_KEY Key;
-	while ((Status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &Key)) == EFI_NOT_READY);
-	return Key.UnicodeChar;
-}
-
-int readDigit() {
-	unsigned int c = readChar();
-	return c - '0';
-}
-
 void takeTurn() {
 	Print(L"Where would you (%c) like to go (1-9): ", activePlayer);
 	int playerAction = readDigit();
@@ -87,10 +73,4 @@ void playGame() {
 int main() {
 	playGame();
 	return 0;
-}
-
-EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
-	InitializeLib(ImageHandle, SystemTable);
-	main();
-	return EFI_SUCCESS;
 }
