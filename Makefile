@@ -33,12 +33,12 @@ OBJCOPYFLAGS_EFI = \
 	--subsystem=10
 
 .PHONY: default
-default: tic_tac_toe.efi
+default: blackjack.efi tic_tac_toe.efi
 
 %.o: src/%.c
 	gcc $(CFLAGS_EFI) -o $@ $^
 
-%.so: %.o
+%.so: %.o rand.o time.o
 	ld -o $@ $^ $(LDFLAGS_EFI)
 
 %.efi: %.so

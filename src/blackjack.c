@@ -1,7 +1,8 @@
+#include <efi.h>
+#include <efilib.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include "rand.h"
+#include "time.h"
 
 int dealerHand = 0;
 int dealerHiddenCard = 0;
@@ -17,11 +18,11 @@ void dealHands() {
 	int card1 = drawCard();
 	int card2 = drawCard();
 	playerHand = card1 + card2;
-	printf("You have a %d and a %d. Your total is %d.\n", card1, card2, playerHand);
+	Print(L"You have a %d and a %d. Your total is %d.\n", card1, card2, playerHand);
 
 	dealerHiddenCard = drawCard();
 	dealerHand = drawCard();
-	printf("Dealer has a %d and a hidden card.\n", dealerHand);
+	Print(L"Dealer has a %d and a hidden card.\n", dealerHand);
 }
 
 void initialize() {
@@ -34,34 +35,46 @@ void initialize() {
 bool checkGameOver() {
 	int dealerTotal = dealerHand + dealerHiddenCard;
 	if (dealerTotal > 21) {
-		printf("Dealer's hidden card was %d. Dealer has %d. Dealer busts. You win!\n", dealerHiddenCard, dealerTotal);
+		Print(L"Dealer's hidden card was %d. Dealer has %d. Dealer busts. You win!\n", dealerHiddenCard, dealerTotal);
 		return true;
 	}
 	if (playerHand > 21) {
-		printf("Your total is %d. You bust. You lose!\n", playerHand);
+		Print(L"Your total is %d. You bust. You lose!\n", playerHand);
 		return true;
 	}
 	if (playerHand == 21) {
-		printf("You have 21. You win!\n");
+		Print(L"You have 21. You win!\n");
 		return true;
 	}
 	if (dealerTotal == 21) {
-		printf("Dealer's hidden card was %d. Dealer has 21. Dealer wins. You lose!\n", dealerHiddenCard);
+		Print(L"Dealer's hidden card was %d. Dealer has 21. Dealer wins. You lose!\n", dealerHiddenCard);
 		return true;
 	}
 	return false;
 }
 
+unsigned int readChar() {
+	EFI_STATUS Status = uefi_call_wrapper(ST->ConIn->Reset, 2, ST->ConIn, FALSE);
+	if (EFI_ERROR(Status)) return 0;
+	EFI_INPUT_KEY Key;
+	while ((Status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &Key)) == EFI_NOT_READY);
+	return Key.UnicodeChar;
+}
+
+int readDigit() {
+	unsigned int c = readChar();
+	return c - '0';
+}
+
 void takePlayerTurn() {
-	printf("Choose an action:\n1) Draw\n2) Pass\nChoice: ");
-	int playerAction = 0;
-	scanf(" %d", &playerAction);
+	Print(L"Choose an action:\n1) Draw\n2) Pass\nChoice: ");
+	int playerAction = readDigit();
 	if (playerAction == 1) {
 		int card = drawCard();
 		playerHand += card;
-		printf("You drew a %d. Your new total is %d.\n", card, playerHand);
+		Print(L"You drew a %d. Your new total is %d.\n", card, playerHand);
 	} else {
-		printf("You pass.\n");
+		Print(L"You pass.\n");
 	}
 }
 
@@ -69,15 +82,15 @@ void takeDealerTurn() {
 	if (dealerHand + dealerHiddenCard < 17 || rand() % 2) {
 		int card = drawCard();
 		dealerHand += card;
-		printf("Dealer draws %d. Dealer's new total is %d plus hidden card.\n", card, dealerHand);
+		Print(L"Dealer draws %d. Dealer's new total is %d plus hidden card.\n", card, dealerHand);
 	} else {
-		printf("Dealer passes. Your turn.\n");
+		Print(L"Dealer passes. Your turn.\n");
 	}
 }
 
 void playGame() {
 	while (!checkGameOver()) {
-		printf("\n");
+		Print(L"\n");
 		takePlayerTurn();
 		if (checkGameOver()) break;
 		takeDealerTurn();
@@ -88,4 +101,10 @@ int main() {
 	initialize();
 	playGame();
 	return 0;
+}
+
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
+	InitializeLib(ImageHandle, SystemTable);
+	main();
+	return EFI_SUCCESS;
 }
