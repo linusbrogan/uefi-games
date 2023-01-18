@@ -1,4 +1,4 @@
-CFLAGS_EFI = \
+CFLAGS = \
 	-I/usr/include/efi \
 	-fpic \
 	-ffreestanding \
@@ -6,10 +6,9 @@ CFLAGS_EFI = \
 	-fno-stack-check \
 	-fshort-wchar \
 	-mno-red-zone \
-	-maccumulate-outgoing-args \
-	-c
+	-maccumulate-outgoing-args
 
-LDFLAGS_EFI = \
+LDFLAGS = \
 	-shared \
 	-Bsymbolic \
 	-L/usr/lib \
@@ -18,7 +17,7 @@ LDFLAGS_EFI = \
 	-lefi \
 	-lgnuefi
 
-OBJCOPYFLAGS_EFI = \
+OBJCOPYFLAGS = \
 	-j .text \
 	-j .sdata \
 	-j .data \
@@ -36,13 +35,13 @@ OBJCOPYFLAGS_EFI = \
 default: blackjack.efi tic_tac_toe.efi
 
 %.o: src/%.c
-	gcc $(CFLAGS_EFI) -o $@ $^
+	gcc $(CFLAGS) -c -o $@ $^
 
 %.so: %.o rand.o time.o
-	ld -o $@ $^ $(LDFLAGS_EFI)
+	ld -o $@ $^ $(LDFLAGS)
 
 %.efi: %.so
-	objcopy $(OBJCOPYFLAGS_EFI) $^ $@
+	objcopy $(OBJCOPYFLAGS) $^ $@
 
 .PHONY: clean
 clean:
