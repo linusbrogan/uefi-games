@@ -38,7 +38,7 @@ LIBS = \
 	time
 
 .PHONY: default
-default: blackjack.efi tic_tac_toe.efi
+default: blackjack.efi rpg.efi tic_tac_toe.efi
 
 %.o: src/%.c
 	gcc $(CFLAGS) -c -o $@ $^
