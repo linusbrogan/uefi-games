@@ -1,3 +1,5 @@
+#include <efi.h>
+#include <efilib.h>
 #include <stdbool.h>
 #include "efistub.h"
 #include "io.h"
@@ -55,7 +57,7 @@ bool checkGameOver() {
 
 void takePlayerTurn() {
 	Print(L"Choose an action:\n1) Draw\n2) Pass\nChoice: ");
-	int playerAction = readDigit();
+	int playerAction = scanDigit();
 	if (playerAction == 1) {
 		int card = drawCard();
 		playerHand += card;

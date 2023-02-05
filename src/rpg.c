@@ -1,3 +1,5 @@
+#include <efi.h>
+#include <efilib.h>
 #include <stdbool.h>
 #include "efistub.h"
 #include "io.h"
@@ -51,7 +53,7 @@ bool checkGameOver() {
 
 void takePlayerTurn() {
 	Print(L"Choose an action:\n1) Stab\n2) Magic blast\n3) Feed with bacon\nChoice: ");
-	int playerAction = readDigit();
+	int playerAction = scanDigit();
 	if (playerAction == ATTACK_CHEAT) {
 		playerHealth += 1000000;
 		if (playerHealth >= 2000000) {

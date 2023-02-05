@@ -1,3 +1,5 @@
+#include <efi.h>
+#include <efilib.h>
 #include <stdbool.h>
 #include "efistub.h"
 #include "io.h"
@@ -49,7 +51,7 @@ bool checkWin() {
 
 void takeTurn() {
 	Print(L"Where would you (%c) like to go (1-9): ", activePlayer);
-	int playerAction = readDigit();
+	int playerAction = scanDigit();
 	Print(L"\n");
 	playerAction--;
 	int row = playerAction / 3;

@@ -31,14 +31,21 @@ OBJCOPYFLAGS = \
 	--target efi-app-x86_64 \
 	--subsystem=10
 
+GAMES = \
+	blackjack \
+	hangman \
+	rpg \
+	tic_tac_toe
+
 LIBS = \
 	efistub \
 	io \
 	rand \
-	time
+	time \
+	wchar
 
 .PHONY: default
-default: blackjack.efi rpg.efi tic_tac_toe.efi
+default: $(addsuffix .efi,$(GAMES))
 
 %.o: src/%.c
 	gcc $(CFLAGS) -c -o $@ $^
