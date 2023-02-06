@@ -1,0 +1,35 @@
+name: Create release and build from tag
+
+on:
+  push:
+    tags: [ "v*.*.*"]
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install build dependencies
+        run: sudo apt-get install -y gnu-efi
+
+      - name: Compile
+        run: make
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload release artifacts
+        run: gh release upload "$GITHUB_REF_NAME" *.efi
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
