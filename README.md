@@ -1,7 +1,7 @@
 # UEFI Games
 I wrote these games for Windows years ago.
-They run under Linux
 Here they are ported them to UEFI, so they do not need an operating system to run.
+Older versions in tag [`linux-games`](https://github.com/linusbrogan/uefi-games/releases/tag/linux-games) run under Linux and can be built with `make`.
 
 ## Games
 - Blackjack, at least mostly
